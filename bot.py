@@ -15,11 +15,11 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
+currency = "\u20BD"
+greaterorequal = '\u2265'
 
 @tree.command(name= "tier", description= "Tiers are assigned using slot price identification")
 async def tier(interaction: discord.Interaction):
-    currency = "\u20BD"
-    greaterorequal = '\u2265'
     embed = discord.Embed(title=f"Loot Tiers", color=0xffffff)
     embed.add_field(name=":star:Legendary", value=f"{greaterorequal} 40 000{currency}", inline=False)
     embed.add_field(name=":green_circle:Great", value=f"{greaterorequal} 30 000{currency}", inline=False)
@@ -31,7 +31,6 @@ async def tier(interaction: discord.Interaction):
 @tree.command(name= "price", description= "Check the price of Escape from Tarkov items")
 async def command(interaction: discord.Interaction,search: str):
     try:
-        currency = "\u20BD"
         item_data = get_item_data(search)
         item_name = item_data['name']
         item_price = item_data['low24hPrice']
@@ -72,8 +71,8 @@ async def command(interaction: discord.Interaction,search: str):
 @client.event
 async def on_ready():
     await tree.sync()
-    await client.change_presence(status=discord.Status.online, activity=discord.Game("Try me - > /price"))
-    print(f'We have logged in as {client.user}')
+    await client.change_presence(status=discord.Status.online, activity=discord.Game("/price | Fence "))
+    print(f'you have successfully logged out of the {client.user}')
 
 
 @client.event

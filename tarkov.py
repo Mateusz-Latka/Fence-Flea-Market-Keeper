@@ -3,7 +3,7 @@ import json
 
 
 def run_query(query):
-    max_retries = 100
+    max_retries = 2
     retries = 0
     while retries < max_retries:
         response = requests.post('https://api.tarkov.dev/graphql', json={'query': query})

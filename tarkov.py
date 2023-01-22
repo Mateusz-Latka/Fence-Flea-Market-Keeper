@@ -3,18 +3,11 @@ import json
 
 
 def run_query(query):
-    max_retries = 2
-    retries = 0
-    while retries < max_retries:
-        response = requests.post('https://api.tarkov.dev/graphql', json={'query': query})
-        if response.status_code == 200:
-            return response.json()
-        else:
-            retries += 1
-            if retries == max_retries:
-                raise Exception("Query failed after {} retries".format(max_retries))
-            else:
-                print("Query failed, retrying...")
+    response = requests.post('https://api.tarkov.dev/graphql', json={'query': query})
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception("Query failed to run by returning code of {}. {}".format(response.status_code, query))
 
 def get_item_data(name):
 
@@ -69,3 +62,15 @@ def get_tier(search):
         return ':red_circle:Poor'
     else:
         return ':x:Trash'  
+
+def get_color(search):
+    if search >= 40000:
+        return 0xFF8C00
+    elif search >= 30000:
+        return 0x00FF00
+    elif search >= 20000:
+        return 0xFFFF66
+    elif search >= 10000:
+        return 0xFF0000
+    else:
+        return 0x800000

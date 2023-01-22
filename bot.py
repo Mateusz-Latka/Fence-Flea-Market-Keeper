@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import discord
 from discord import app_commands
 from discord.ui import Button, View
-from tarkov import get_item_data, get_tier
+from tarkov import get_item_data, get_tier, get_color
 from datetime import datetime
 import os
 
@@ -28,9 +28,15 @@ async def tier(interaction: discord.Interaction):
     embed.add_field(name=":x:Trash", value=f"< 10 000{currency}",  inline=False)
     await interaction.response.send_message(embed=embed)      
 
+@tree.command(name= "how2use", description= "Information about usage of the bot")
+async def how2use(interaction: discord.Interaction):
+    embed = discord.Embed(title=f"Fence Flea Market Keeper Tutorial", color=0xffffff)
+    embed.add_field(name="/price", value=f"This command allows you to check the actual market price of item", inline=False)
+    embed.add_field(name="/tier", value=f"This command showing you, how tiers are given to items",  inline=False)
+    await interaction.response.send_message(embed=embed)   
+
 @tree.command(name= "price", description= "Check the price of Escape from Tarkov items")
-async def command(interaction: discord.Interaction,search: str):
-    try:
+async def price(interaction: discord.Interaction,search: str):
         item_data = get_item_data(search)
         item_name = item_data['name']
         item_price = item_data['low24hPrice']
@@ -52,7 +58,7 @@ async def command(interaction: discord.Interaction,search: str):
         button = Button(label="TarkovWiki", style=discord.ButtonStyle.green, url=item_link)
         view = View()
         view.add_item(button)
-        embed = discord.Embed(title=f"{item_name}", color=0xffffff)
+        embed = discord.Embed(title=f"{item_name}", color=get_color(price_perslot))
         embed.set_thumbnail(url=item_icon)
         embed.add_field(name="Price:", value=f' > {format_price}{currency}\n > (lowest price)', inline=True)
         embed.add_field(name="Per Slot:", value=f' > {format_priceperslot}{currency}\n > ({slots} {slots1})', inline=True)
@@ -61,17 +67,12 @@ async def command(interaction: discord.Interaction,search: str):
         embed.add_field(name="Last update:", value=formatted_date, inline=False)
         embed.set_footer(text="Data povided by: https://tarkov.dev/api/")
         await interaction.response.send_message(embed=embed, view=view)
-    except:
-        embed = discord.Embed(title=f"ERROR 404: NOT FOUND", color=0xffffff)
-        embed.add_field(name=f'Item {search} do not exist', value=f'You probably made a typo, please try again', inline=True)
-        embed.set_footer(text=f'Data povided by: https://tarkov.dev/api/')
-        await interaction.response.send_message(embed=embed)
 
 
 @client.event
 async def on_ready():
     await tree.sync()
-    await client.change_presence(status=discord.Status.online, activity=discord.Game("/price | Fence "))
+    await client.change_presence(status=discord.Status.online, activity=discord.Game("/how2use | Fence "))
     print(f'you have successfully logged out of the {client.user}')
 
 

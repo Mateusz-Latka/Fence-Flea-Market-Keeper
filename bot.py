@@ -1,4 +1,3 @@
-# coding: ISO-8859-1
 from dotenv import load_dotenv
 import discord
 from discord import app_commands
@@ -20,7 +19,7 @@ greaterorequal = '\u2265'
 
 @tree.command(name= "tier", description= "Tiers are assigned using slot price identification")
 async def tier(interaction: discord.Interaction):
-    embed = discord.Embed(title=f"Loot Tiers", color=0xffffff)
+    embed = discord.Embed(title=f"Loot Tiers", color=0x000000)
     embed.add_field(name=":star:Legendary", value=f"{greaterorequal} 40 000{currency}", inline=False)
     embed.add_field(name=":green_circle:Great", value=f"{greaterorequal} 30 000{currency}", inline=False)
     embed.add_field(name=":yellow_circle:Average", value=f"{greaterorequal} 20 000{currency}", inline=False)
@@ -30,7 +29,7 @@ async def tier(interaction: discord.Interaction):
 
 @tree.command(name= "how2use", description= "Information about usage of the bot")
 async def how2use(interaction: discord.Interaction):
-    embed = discord.Embed(title=f"Fence Flea Market Keeper Tutorial", color=0xffffff)
+    embed = discord.Embed(title=f"Fence Flea Market Keeper Tutorial", color=0x000000)
     embed.add_field(name="/price", value=f"This command allows you to check the actual market price of item", inline=False)
     embed.add_field(name="/tier", value=f"This command showing you, how tiers are given to items",  inline=False)
     await interaction.response.send_message(embed=embed)   
@@ -74,17 +73,5 @@ async def on_ready():
     await tree.sync()
     await client.change_presence(status=discord.Status.online, activity=discord.Game("/how2use | Fence "))
     print(f'you have successfully logged out of the {client.user}')
-
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    username = str(message.author)
-    user_message = str(message.content)
-    channel = str(message.channel)
-
-    print(f"{username} said: {user_message} on: {channel}")
-
 
 client.run(os.getenv("TOKEN"))

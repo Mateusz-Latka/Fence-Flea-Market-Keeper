@@ -1,16 +1,11 @@
 import requests
-import json
-
 
 def run_query(query):
     response = requests.post('https://api.tarkov.dev/graphql', json={'query': query})
-    if response.status_code == 200:
-        return response.json()
-    else:
-        raise Exception("Query failed to run by returning code of {}. {}".format(response.status_code, query))
+    response.raise_for_status()
+    return response.json()
 
 def get_item_data(name):
-
     query = f"""
     {{
         items(name: "{name}") {{
@@ -26,30 +21,28 @@ def get_item_data(name):
     }}
     """
 
-    result = run_query(query)
+    try:
+        result = run_query(query)
+        items = result['data']['items']
 
-    items = result['data']['items']
+        if not items:
+            raise ValueError(f"Item '{name}' not found in the database.")
 
-    item_name = items[0]['name']
-    item_price = items[0]['low24hPrice']
-    item_icon = items[0]['iconLink']
-    item_link = items[0]['wikiLink']
-    item_width = items[0]['width']
-    item_height = items[0]['height']
-    item_last48 = items[0]['changeLast48hPercent']
-    item_update = items[0]['updated']
-    
-
-    return {
-        'name': item_name,
-        'low24hPrice': item_price,
-        'iconLink': item_icon,
-        'wikiLink': item_link,
-        'width':item_width,
-        'height':item_height,
-        'changeLast48hPercent':item_last48,
-        'updated':item_update
-    }
+        item_data = items[0]
+        return {
+            'name': item_data['name'],
+            'low24hPrice': item_data['low24hPrice'],
+            'iconLink': item_data['iconLink'],
+            'wikiLink': item_data['wikiLink'],
+            'width': item_data['width'],
+            'height': item_data['height'],
+            'changeLast48hPercent': item_data['changeLast48hPercent'],
+            'updated': item_data['updated']
+        }
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Failed to connect to the Tarkov API: {e}")
+    except (KeyError, IndexError):
+        raise Exception("Failed to parse the API response.")
 
 def get_tier(search):
     if search >= 40000:

@@ -17,9 +17,9 @@ tree = app_commands.CommandTree(client)
 currency = "\u20BD"
 greaterorequal = '\u2265'
 
-@tree.command(name= "tier", description= "Tiers are assigned using slot price identification")
+@tree.command(name="tier", description="Tiers are assigned using slot price identification")
 async def tier(interaction: discord.Interaction):
-    embed = discord.Embed(title=f"Loot Tiers", color=0x000000)
+    embed = discord.Embed(title="Loot Tiers", color=0x000000)
     embed.add_field(name=":star:Legendary", value=f"{greaterorequal} 40 000{currency}", inline=False)
     embed.add_field(name=":green_circle:Great", value=f"{greaterorequal} 30 000{currency}", inline=False)
     embed.add_field(name=":yellow_circle:Average", value=f"{greaterorequal} 20 000{currency}", inline=False)
@@ -27,15 +27,16 @@ async def tier(interaction: discord.Interaction):
     embed.add_field(name=":x:Trash", value=f"< 10 000{currency}",  inline=False)
     await interaction.response.send_message(embed=embed)      
 
-@tree.command(name= "how2use", description= "Information about usage of the bot")
+@tree.command(name="how2use", description="Information about usage of the bot")
 async def how2use(interaction: discord.Interaction):
-    embed = discord.Embed(title=f"Fence Flea Market Keeper Tutorial", color=0x000000)
-    embed.add_field(name="/price", value=f"This command allows you to check the actual market price of item", inline=False)
-    embed.add_field(name="/tier", value=f"This command showing you, how tiers are given to items",  inline=False)
-    await interaction.response.send_message(embed=embed)   
+    embed = discord.Embed(title="Fence Flea Market Keeper Tutorial", color=0x000000)
+    embed.add_field(name="/price", value="This command allows you to check the actual market price of item", inline=False)
+    embed.add_field(name="/tier", value="This command showing you, how tiers are given to items",  inline=False)
+    await interaction.response.send_message(embed=embed) 
 
-@tree.command(name= "price", description= "Check the price of Escape from Tarkov items")
-async def price(interaction: discord.Interaction,search: str):
+@tree.command(name="price", description="Check the price of Escape from Tarkov items")
+async def price(interaction: discord.Interaction, search: str):
+    try:
         item_data = get_item_data(search)
         item_name = item_data['name']
         item_price = item_data['low24hPrice']
@@ -66,6 +67,9 @@ async def price(interaction: discord.Interaction,search: str):
         embed.add_field(name="Last update:", value=formatted_date, inline=False)
         embed.set_footer(text="Data povided by: https://tarkov.dev/api/")
         await interaction.response.send_message(embed=embed, view=view)
+    except Exception as e:
+        embed = discord.Embed(title="Error", description=str(e), color=0xFF0000)
+        await interaction.response.send_message(embed=embed)
 
 
 @client.event

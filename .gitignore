@@ -2,3 +2,5 @@
 /.idea
 /.vs
 /__pycache__
+.git
+.github

@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'FenceFleaMarketKeeper'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2E2BE8C40A2A48EBA616029049CD2FAB }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_ECCFDC0DF631443F8F692CCD4CFC8F0D }}
